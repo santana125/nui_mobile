@@ -12,11 +12,19 @@ function Login({navigation}){
     };
     return (
         <SafeAreaView style={styles.container}>
-            <Image source={nui_logo}/>
+            <Image style={styles.nuiLogo} source={nui_logo}/>
             <View style={styles.dataInput}>
             <TextInput style={styles.input}
+                autoCorrect={false}
+                autoCapitalize='none'
+                textContentType='emailAddress'
                 placeholder="E-mail..."/>
             <TextInput style={styles.input}
+                autoCorrect={false}
+                autoCapitalize='none'
+                secureTextEntry={true}
+                textContentType='password'
+                placeholderColor='#'
                 placeholder="Senha..."/>
             </View>
 			<TouchableOpacity style={styles.loginButton}>
@@ -94,6 +102,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#4c566a',
     },
+	nuiLogo: {
+		width: 200,
+		height: 200,
+	},
 });
 
 export default Login 

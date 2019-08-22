@@ -13,7 +13,7 @@ function Welcome({navigation}){
     };
     return (
         <SafeAreaView style={styles.container}>
-            <Image source={nui_logo}/>
+            <Image style={styles.nuiLogo} source={nui_logo}/>
             <Text style={styles.welcome}>Olá, tudo bem?</Text>
 			<TouchableOpacity style={styles.loginButton} onPress={goToLogin}>
 				<LinearGradient 
@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#eceff4',
     },
 	welcome: {
-		paddingTop: 52,
+		paddingTop: 100,
+		paddingBottom: 20,
 		fontWeight: 'bold',
 		fontSize: 26,
 		color: '#4c566a',
@@ -84,10 +85,14 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#4c566a',
     },
-    endText:{
+    endText: {
         position: 'absolute',
         bottom: 0,
-    }
+	},
+	nuiLogo: {
+		width: 200,
+		height: 200,
+	},
 });
 
 export default Welcome 
