@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {StyleSheet, SafeAreaView, Text, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 
@@ -12,44 +12,62 @@ function Welcome({navigation}){
         navigation.navigate('Login');
     };
     return (
-        <SafeAreaView style={styles.container}>
-            <Image style={styles.nuiLogo} source={nui_logo}/>
-            <Text style={styles.welcome}>Olá, tudo bem?</Text>
-			<TouchableOpacity style={styles.loginButton} onPress={goToLogin}>
-				<LinearGradient 
-					colors={['#d737b3', '#ae45ac', '#8154a7']} 
-					style={styles.loginBackground}>
-						<Text style={styles.loginText}>LOGIN</Text>
-				</LinearGradient>
-            </TouchableOpacity>
-                <Text style={styles.signinText}> Ainda não é cadastrado ?</Text>
-            <TouchableOpacity style={styles.signinButton}>
-                <Text style={styles.loginText}>CADASTRAR</Text> 
-            </TouchableOpacity>
-            <Text style={styles.endText}>Nui Ver. 0.0.1</Text>
-        </SafeAreaView>
-    )
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Image style={styles.nuiLogo} source={nui_logo} />
+          <Text style={styles.welcome}>Olá, tudo bem?</Text>
+        </View>
+        <View style={styles.content}>
+          <TouchableOpacity style={styles.loginButton} onPress={goToLogin}>
+            <LinearGradient
+              colors={['#d737b3', '#ae45ac', '#8154a7']}
+              style={styles.loginBackground}>
+              <Text style={styles.loginText}>LOGIN</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+          <Text style={styles.signinText}> Ainda não é cadastrado ?</Text>
+          <TouchableOpacity style={styles.signinButton}>
+            <Text style={styles.loginText}>CADASTRAR</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.footer}>
+          <Text style={styles.endText}>Nui Ver. 0.0.1</Text>
+        </View>
+      </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
     container:{
-        flex: 1,
-        padding: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-		backgroundColor: '#eceff4',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+		  backgroundColor: '#eceff4',
+    },
+    header:{
+      alignItems: 'center',
+      paddingTop: 40,
+      paddingHorizontal: 40,
+      alignSelf:'stretch'
+    },
+    footer: {
+      alignSelf:'stretch'
+    },
+    content: {
+      alignItems:'center',
+      paddingHorizontal: 32,
+      alignSelf:'stretch'
     },
 	welcome: {
-		paddingTop: 100,
-		paddingBottom: 20,
+    textAlign:'center',
 		fontWeight: 'bold',
 		fontSize: 26,
 		color: '#4c566a',
+    paddingTop: 20,
 	},
 	loginButton: {
 		height: 48,
 		borderRadius: 38,
-		marginVertical: 10,
 		marginHorizontal: 32,
 		alignSelf: 'stretch',
 		alignItems: 'center',
@@ -71,7 +89,6 @@ const styles = StyleSheet.create({
 	signinButton:{
 		height: 48,
 		borderRadius: 38,
-		marginVertical: 6,
 		marginHorizontal: 32,
 		alignSelf: 'stretch',
 		alignItems: 'center',
@@ -80,14 +97,16 @@ const styles = StyleSheet.create({
         elevation: 2,
 	},
     signinText:{
-        marginTop: 20,
-        fontWeight: 'bold',
-        fontSize: 14,
-        color: '#4c566a',
+      paddingTop: 15,
+      paddingBottom: 5,
+      textAlign:'center',
+      fontWeight: 'bold',
+      fontSize: 14,
+      color: '#4c566a',
     },
     endText: {
-        position: 'absolute',
-        bottom: 0,
+      textAlign:'center',
+      bottom: 0,
 	},
 	nuiLogo: {
 		width: 200,

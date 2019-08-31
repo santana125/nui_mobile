@@ -6,9 +6,9 @@ import Login from './pages/Auth/Login';
 
 export default createAppContainer(
     createSwitchNavigator({
+        Main,
         Welcome,
         Login,
-        Main,
     })
 );
 
