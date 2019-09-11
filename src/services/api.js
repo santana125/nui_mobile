@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: "http://192.168.2.125:5001",
+  baseURL: "https://nui-api.herokuapp.com",
 });
 
 export default api;

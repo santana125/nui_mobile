@@ -1,40 +1,52 @@
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, SafeAreaView, View, Text, Image, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 import nui_logo from '../assets/nui_logo.png';
 
 
 function Welcome({navigation}){
-    function goToLogin() {
-        navigation.navigate('Login');
-    };
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Image style={styles.nuiLogo} source={nui_logo} />
-          <Text style={styles.welcome}>Olá, tudo bem?</Text>
-        </View>
-        <View style={styles.content}>
-          <TouchableOpacity style={styles.loginButton} onPress={goToLogin}>
-            <LinearGradient
-              colors={['#d737b3', '#ae45ac', '#8154a7']}
-              style={styles.loginBackground}>
-              <Text style={styles.loginText}>LOGIN</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          <Text style={styles.signinText}> Ainda não é cadastrado ?</Text>
-          <TouchableOpacity style={styles.signinButton}>
-            <Text style={styles.loginText}>CADASTRAR</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.endText}>Nui Ver. 0.0.1</Text>
-        </View>
-      </SafeAreaView>
-    );
+  function goToLogin() {
+      navigation.navigate('Login');
+  };
+  useEffect(() => {
+    async function checkLogin() {
+      const UserToken = await AsyncStorage.getItem('@UserToken');
+      console.log(UserToken);
+      if (UserToken != null) navigation.navigate('Main');
+      else {
+        console.log('dasda');
+      }
+    }
+    checkLogin();
+  }, []);
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Image style={styles.nuiLogo} source={nui_logo} />
+        <Text style={styles.welcome}>Olá, tudo bem?</Text>
+      </View>
+      <View style={styles.content}>
+        <TouchableOpacity style={styles.loginButton} onPress={goToLogin}>
+          <LinearGradient
+            colors={['#d737b3', '#ae45ac', '#8154a7']}
+            style={styles.loginBackground}>
+            <Text style={styles.loginText}>LOGIN</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+        <Text style={styles.signinText}> Ainda não é cadastrado ?</Text>
+        <TouchableOpacity style={styles.signinButton} onPress={ () => (navigation.navigate('Signup')) }>
+          <Text style={styles.loginText}>CADASTRAR</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.footer}>
+        <Text style={styles.endText}>Nui Ver. 0.0.1</Text>
+      </View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({

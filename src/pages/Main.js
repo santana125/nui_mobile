@@ -1,10 +1,10 @@
 import React from 'react';
 import {SafeAreaView, View,StyleSheet, Text} from 'react-native';
-import HeaderComponent from '../components/MainPage/HeaderComponent'
-import CategoriesComponent from '../components/MainPage/CategoriesComponent'
+import HeaderComponent from '../components/MainPage/HeaderComponent';
+import CategoriesComponent from '../components/MainPage/CategoriesComponent';
+import EstablishmentComponent from '../components/MainPage/EstablishmentComponent';
 
-
-function Main(){
+function Main({navigation}){
     return (
         <SafeAreaView style={styles.container}>
           <View style={styles.header}>
@@ -13,9 +13,7 @@ function Main(){
           <View style={styles.content}>
             <Text style={styles.titleText}>Categorias:</Text>
             <CategoriesComponent/> 
-            <View style={styles.placeholder}>
-              <Text>I'm a Beautiful Placeholder</Text>
-            </View>
+            <EstablishmentComponent style={styles.stabs}/>
           </View>
         </SafeAreaView>
     )
@@ -32,9 +30,9 @@ const styles = StyleSheet.create({
       alignSelf:'stretch'
     },
     content: {
-      flex:2,
-      alignSelf:'flex-start',
+      alignSelf:'stretch',
       padding: 8,
+      flex:3,
     },
     titleText:{
       paddingStart:10,
@@ -42,15 +40,6 @@ const styles = StyleSheet.create({
       fontWeight:'bold',
       textAlign:'left',
     },
-  placeholder:{
-      flex:2,
-      backgroundColor: '#e5e9f0',
-      borderRadius: 8,
-      paddingTop: 12,
-      padding: 10,
-      elevation:7,
-      alignSelf:'stretch',
-  }
 })
 
 export default Main
