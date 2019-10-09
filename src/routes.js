@@ -6,6 +6,7 @@ import Main from './pages/Main';
 import Welcome from './pages/Welcome';
 import Login from './pages/Auth/Login';
 import Signup from './pages/Signup/Signup';
+import EstabSignup from './pages/Signup/EstabSignup';
 import Address from './pages/Signup/Address';
 
 const SignupStack = createStackNavigator({ 
@@ -23,6 +24,12 @@ const SignupStack = createStackNavigator({
       />
     ),
   }) },
+  EstabSignup: {
+    screen: EstabSignup,
+    navigationOptions: () => ({
+      title:'Cadastrar Estabelecimento',
+    })
+  },
   Address: {
     screen: Address,
     navigationOptions: () => ({

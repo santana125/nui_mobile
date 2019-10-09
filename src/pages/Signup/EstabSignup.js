@@ -1,44 +1,29 @@
 import React, { Component } from 'react'
-import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import {withNavigation} from 'react-navigation'
 import api from '../../services/api'
 
-
-class Address extends Component {
+class EstabSignup extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      endereco: '',
-      cidade: '',
-      numero: '',
-      cep: '',
-      estado: '',
+      nome: '',
+      senha: '',
+      senha2: '',
+      email: '',
+      cadastroPessoa: '',
       loading: false,
+      token: ''
     }
   }
-  cadastraEndereco = async () => {
-    const {endereco, cidade, numero, cep, estado} = this.state
-    const token = this.props.navigation.getParam('userToken')
-
-    try {
-    const response = await api.post('/endereco', 
-                              {endereco,
-                               cidade,
-                               numero,
-                               cep,
-                               estado},
-                               {headers:
-                                {Authorization: token}})
-    } catch (error) {
-      console.log("azul")
-      if(error.response.status === 404)
-        Alert.alert('Erro', "Não foi possível encontrar o servidor.")
-      else
-        Alert.alert('Erro', error.response.data.message)
-    }
-
+  cadastrarEstabelecimento = async () => {
+    const {nome,senha,senha2,email,cadastroPessoa, token} = this.state
+    const  response = await api.post('/usuario', {nome, senha, senha2, email, cadastroPessoa})
+    this.setState({token: response.data.message})
+    this.props.navigation.navigate('Address', {userToken: this.state.token})
   }
+
   render() {
     const { loading } = this.state
     return (
@@ -47,10 +32,10 @@ class Address extends Component {
           style={styles.input}
           autoCorrect={false}
           autoCapitalize="none"
-          textContentType="text"
-          placeholder="Cidade..."
-          value={this.state.cidade}
-          onChangeText={text => this.setState({ cidade: text })}
+          textContentType="emailAddress"
+          placeholder="Nome..."
+          value={this.state.email}
+          onChangeText={text => this.setState({ email: text })}
           returnKeyType='next'
           onSubmitEditing={() => this.refs.passEntry.focus()}
         />
@@ -58,10 +43,10 @@ class Address extends Component {
           style={styles.input}
           autoCorrect={false}
           autoCapitalize="none"
-          textContentType="text"
-          placeholder="Estado..."
-          value={this.state.estado}
-          onChangeText={text => this.setState({ estado: text })}
+          textContentType="emailAddress"
+          placeholder="E-mail..."
+          value={this.state.nome}
+          onChangeText={text => this.setState({ nome: text })}
           returnKeyType='next'
           onSubmitEditing={() => this.refs.passEntry.focus()}
         />
@@ -69,34 +54,39 @@ class Address extends Component {
           style={styles.input}
           autoCorrect={false}
           autoCapitalize="none"
-          textContentType="text"
-          placeholder="Endereço..."
-          value={this.state.endereco}
-          onChangeText={text => this.setState({ endereco: text })}
+          textContentType="emailAddress"
+          placeholder="CPF ou CNPJ"
+          value={this.state.cadastroPessoa}
+          onChangeText={text => this.setState({ cadastroPessoa: text })}
+          returnKeyType='next'
+          onSubmitEditing={() => this.refs.passEntry.focus()}
         />
         <TextInput
           style={styles.input}
           autoCorrect={false}
           autoCapitalize="none"
           secureTextEntry={true}
-          textContentType="string"
-          placeholder="Numero"
-          value={this.state.numero}
-          onChangeText={text => this.setState({ numero: text })}
+          textContentType="password"
+          placeholder="Senha..."
+          value={this.state.senha}
+          onChangeText={text => this.setState({ senha: text })}
+          returnKeyType='go'
+          ref={"passEntry"}
         />
         <TextInput
           style={styles.input}
           autoCorrect={false}
           autoCapitalize="none"
           secureTextEntry={true}
-          textContentType="text"
-          placeholder="CEP"
-          value={this.state.cep}
-          onChangeText={text => this.setState({ cep: text })}
+          textContentType="password"
+          placeholder="Confirme a senha..."
+          value={this.state.senha2}
+          onChangeText={text => this.setState({ senha2: text })}
+          returnKeyType='go'
+          ref={"passEntry"}
         />
           <TouchableOpacity style={styles.loginButton}
-            onPress={this.cadastraEndereco}
-          >
+            onPress={this.cadastrarEstabelecimento}>
             <LinearGradient
               colors={['#d737b3', '#ae45ac', '#8154a7']}
               style={styles.loginBackground}>
@@ -212,4 +202,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default withNavigation(Address)
+export default withNavigation(EstabSignup)

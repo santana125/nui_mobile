@@ -18,7 +18,7 @@ function Welcome({navigation}){
       console.log(UserToken);
       if (UserToken != null) navigation.navigate('Main');
       else {
-        console.log('dasda');
+        console.log('User not authorized');
       }
     }
     checkLogin();
