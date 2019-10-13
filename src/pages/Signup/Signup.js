@@ -1,12 +1,19 @@
 import React from 'react';
-import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
-import IconFontisto from 'react-native-vector-icons/Fontisto'
+import {
+  ScrollView,
+  View,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import IconFontisto from 'react-native-vector-icons/Fontisto';
 import LinearGradient from 'react-native-linear-gradient';
-import {withNavigation} from 'react-navigation'
+import {withNavigation} from 'react-navigation';
 
 class Signup extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       page: 0,
       type: false,
@@ -14,56 +21,74 @@ class Signup extends React.Component {
       senha: '',
       senha2: '',
       email: '',
-      cadPessoa: ''
-    }
+      cadPessoa: '',
+    };
   }
   selectType = type => {
-    this.setState({ type })
-  }
+    this.setState({type});
+  };
   goToSignup = () => {
-    this.state.type ? this.props.navigation.navigate('EstabSignup') : this.props.navigation.navigate('SignupUser')
-  }
+    this.state.type
+      ? this.props.navigation.navigate('EstabSignup')
+      : this.props.navigation.navigate('SignupUser');
+  };
 
   move = delta => {
     const page = this.state.page + delta;
     this.go(page);
-  }
+  };
 
   go = page => {
     this.viewPager.setPage(page);
-    this.setState({ page });
-  }
+    this.setState({page});
+  };
 
   render() {
-    const { page, type } = this.state;
+    const {page, type} = this.state;
     return (
-      <ScrollView style={styles.container} contentContainerStyle={{flex:1}}>
+      <ScrollView style={styles.container} contentContainerStyle={{flex: 1}}>
         <KeyboardAvoidingView style={styles.content} enabled behavior="padding">
-        <View style={{ flex: 1, alignSelf:'stretch'}}>
-          <KeyboardAvoidingView key='0' style={{ alignItems: 'center', justifyContent: 'space-between', marginVertical: 20, flex:1 }}>
-            <Text style={styles.titleText}>Escolha uma opção:</Text>
-            <View style={styles.cards}>
-              <TouchableOpacity style={[!type ? styles.cardSelected : styles.card, { marginRight: 5 }]} onPress={() => this.selectType(false)}>
-                <IconFontisto name='smiley' size={64} />
-                <Text style={styles.subtitle}>Usuario</Text>
+          <View style={{flex: 1, alignSelf: 'stretch'}}>
+            <KeyboardAvoidingView
+              key="0"
+              style={{
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginVertical: 20,
+                flex: 1,
+              }}>
+              <Text style={styles.titleText}>Escolha uma opção:</Text>
+              <View style={styles.cards}>
+                <TouchableOpacity
+                  style={[
+                    !type ? styles.cardSelected : styles.card,
+                    {marginRight: 5},
+                  ]}
+                  onPress={() => this.selectType(false)}>
+                  <IconFontisto name="smiley" size={64} />
+                  <Text style={styles.subtitle}>Usuario</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={type ? styles.cardSelected : styles.card}
+                  onPress={() => this.selectType(true)}>
+                  <IconFontisto name="shopping-store" size={64} />
+                  <Text style={styles.subtitle}>Estabelecimento</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={this.goToSignup}>
+                <LinearGradient
+                  colors={['#d737b3', '#ae45ac', '#8154a7']}
+                  style={styles.loginBackground}>
+                  <Text style={styles.loginText}>Proxima etapa</Text>
+                </LinearGradient>
               </TouchableOpacity>
-              <TouchableOpacity style={type ? styles.cardSelected : styles.card} onPress={() => this.selectType(true)}>
-                <IconFontisto name='shopping-store' size={64} />
-                <Text style={styles.subtitle}>Estabelecimento</Text>
-              </TouchableOpacity>
-            </View>
-                    <TouchableOpacity style={styles.loginButton} onPress={this.goToSignup}>
-          <LinearGradient
-            colors={['#d737b3', '#ae45ac', '#8154a7']}
-            style={styles.loginBackground}>
-            <Text style={styles.loginText}>Proxima etapa</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -83,9 +108,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 40,
   },
   content: {
-    flex:1,
-    alignItems:'center',
-    alignSelf:'stretch'
+    flex: 1,
+    alignItems: 'center',
+    alignSelf: 'stretch',
   },
   titleText: {
     marginTop: 10,
@@ -95,7 +120,7 @@ const styles = StyleSheet.create({
   },
   cards: {
     maxHeight: 230,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   card: {
     padding: 10,
@@ -122,7 +147,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontWeight: 'bold',
-    fontSize: 18
+    fontSize: 18,
   },
   loginButton: {
     height: 48,
@@ -131,9 +156,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',
-        elevation: 2,
+    elevation: 2,
   },
-  loginBackground:{
+  loginBackground: {
     height: 48,
     borderRadius: 38,
     alignSelf: 'stretch',
@@ -162,7 +187,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+});
 
-})
-
-export default withNavigation(Signup)
+export default withNavigation(Signup);

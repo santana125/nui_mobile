@@ -19,7 +19,6 @@ class EstablishmentComponent extends Component {
   }
   async getData(){
     const UserToken = await AsyncStorage.getItem('@UserToken');
-    console.log(UserToken);
     if(UserToken == null){
       this.props.navigation.navigate('Welcome');
       console.log("token not found");

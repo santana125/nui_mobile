@@ -1,13 +1,20 @@
-import React, { Component } from 'react'
-import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient'
-import {withNavigation} from 'react-navigation'
-import api from '../../services/api'
-
+import React, {Component} from 'react';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import {withNavigation} from 'react-navigation';
+import api from '../../services/api';
 
 class Address extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       endereco: '',
       cidade: '',
@@ -15,98 +22,98 @@ class Address extends Component {
       cep: '',
       estado: '',
       loading: false,
-    }
+    };
   }
   cadastraEndereco = async () => {
-    const {endereco, cidade, numero, cep, estado} = this.state
-    const token = this.props.navigation.getParam('userToken')
+    const {endereco, cidade, numero, cep, estado} = this.state;
+    const token = this.props.navigation.getParam('userToken');
 
     try {
-    const response = await api.post('/endereco', 
-                              {endereco,
-                               cidade,
-                               numero,
-                               cep,
-                               estado},
-                               {headers:
-                                {Authorization: token}})
+      const response = await api.post(
+        '/endereco',
+        {endereco, cidade, numero, cep, estado},
+        {headers: {Authorization: token}},
+      );
     } catch (error) {
-      console.log("azul")
-      if(error.response.status === 404)
-        Alert.alert('Erro', "Não foi possível encontrar o servidor.")
-      else
-        Alert.alert('Erro', error.response.data.message)
+      console.log('azul');
+      if (error.response.status === 404)
+        Alert.alert('Erro', 'Não foi possível encontrar o servidor.');
+      else Alert.alert('Erro', error.response.data.message);
     }
-
-  }
+  };
   render() {
-    const { loading } = this.state
+    const {loading} = this.state;
     return (
       <KeyboardAvoidingView style={styles.container}>
         <TextInput
           style={styles.input}
           autoCorrect={false}
           autoCapitalize="none"
-          textContentType="text"
+          textContentType="addressCity"
           placeholder="Cidade..."
           value={this.state.cidade}
-          onChangeText={text => this.setState({ cidade: text })}
-          returnKeyType='next'
-          onSubmitEditing={() => this.refs.passEntry.focus()}
+          onChangeText={text => this.setState({cidade: text})}
+          returnKeyType="next"
+          onSubmitEditing={() => this.refs.stateEntry.focus()}
         />
         <TextInput
           style={styles.input}
           autoCorrect={false}
-          autoCapitalize="none"
-          textContentType="text"
+          textContentType="addressState"
           placeholder="Estado..."
           value={this.state.estado}
-          onChangeText={text => this.setState({ estado: text })}
-          returnKeyType='next'
-          onSubmitEditing={() => this.refs.passEntry.focus()}
+          onChangeText={text => this.setState({estado: text})}
+          returnKeyType="next"
+          ref={`stateEntry`}
+          onSubmitEditing={() => this.refs.addressEntry.focus()}
         />
         <TextInput
           style={styles.input}
           autoCorrect={false}
-          autoCapitalize="none"
-          textContentType="text"
+          textContentType="streetAddressLine1"
           placeholder="Endereço..."
           value={this.state.endereco}
-          onChangeText={text => this.setState({ endereco: text })}
+          onChangeText={text => this.setState({endereco: text})}
+          ref={`addressEntry`}
+          onSubmitEditing={() => this.refs.numberEntry.focus()}
         />
         <TextInput
           style={styles.input}
           autoCorrect={false}
-          autoCapitalize="none"
           secureTextEntry={true}
-          textContentType="string"
-          placeholder="Numero"
+          textContentType="streetAddressLine2"
+          placeholder="Numero..."
           value={this.state.numero}
-          onChangeText={text => this.setState({ numero: text })}
+          onChangeText={text => this.setState({numero: text})}
+          ref={`numberEntry`}
+          onSubmitEditing={() => this.refs.cepEntry.focus()}
         />
         <TextInput
           style={styles.input}
           autoCorrect={false}
-          autoCapitalize="none"
           secureTextEntry={true}
-          textContentType="text"
+          textContentType="postalCode"
           placeholder="CEP"
           value={this.state.cep}
-          onChangeText={text => this.setState({ cep: text })}
+          onChangeText={text => this.setState({cep: text})}
+          ref={`cepEntry`}
+          onSubmitEditing={() => this.refs.cepEntry.focus()}
         />
-          <TouchableOpacity style={styles.loginButton}
-            onPress={this.cadastraEndereco}
-          >
-            <LinearGradient
-              colors={['#d737b3', '#ae45ac', '#8154a7']}
-              style={styles.loginBackground}>
-              {loading ?
-                <ActivityIndicator size="small" color="white" /> :
-                <Text style={styles.loginText}>Proximo passo</Text>}
-            </LinearGradient>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={this.cadastraEndereco}>
+          <LinearGradient
+            colors={['#d737b3', '#ae45ac', '#8154a7']}
+            style={styles.loginBackground}>
+            {loading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.loginText}>Proximo passo</Text>
+            )}
+          </LinearGradient>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
-    )
+    );
   }
 }
 const styles = StyleSheet.create({
@@ -116,7 +123,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     paddingVertical: 10,
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   header: {
     alignItems: 'center',
@@ -132,7 +139,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
-    alignSelf: 'stretch'
+    alignSelf: 'stretch',
   },
   titleText: {
     marginTop: 10,
@@ -142,7 +149,7 @@ const styles = StyleSheet.create({
   },
   cards: {
     maxHeight: 230,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   card: {
     padding: 10,
@@ -169,7 +176,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontWeight: 'bold',
-    fontSize: 18
+    fontSize: 18,
   },
   loginButton: {
     height: 48,
@@ -209,7 +216,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+});
 
-})
-
-export default withNavigation(Address)
+export default withNavigation(Address);
