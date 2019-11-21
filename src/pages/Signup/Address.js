@@ -5,14 +5,17 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
   TextInput,
   Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {withNavigation} from 'react-navigation';
 import api from '../../services/api';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Address extends Component {
+  static navigationOptions = {drawerLabel: 'Addr'};
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +29,7 @@ class Address extends Component {
   }
   cadastraEndereco = async () => {
     const {endereco, cidade, numero, cep, estado} = this.state;
-    const token = this.props.navigation.getParam('userToken');
+    const token = await AsyncStorage.getItem('@UserToken');
 
     try {
       const response = await api.post(
@@ -35,7 +38,6 @@ class Address extends Component {
         {headers: {Authorization: token}},
       );
     } catch (error) {
-      console.log('azul');
       if (error.response.status === 404)
         Alert.alert('Erro', 'Não foi possível encontrar o servidor.');
       else Alert.alert('Erro', error.response.data.message);
@@ -45,60 +47,62 @@ class Address extends Component {
     const {loading} = this.state;
     return (
       <KeyboardAvoidingView style={styles.container}>
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          autoCapitalize="none"
-          textContentType="addressCity"
-          placeholder="Cidade..."
-          value={this.state.cidade}
-          onChangeText={text => this.setState({cidade: text})}
-          returnKeyType="next"
-          onSubmitEditing={() => this.refs.stateEntry.focus()}
-        />
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          textContentType="addressState"
-          placeholder="Estado..."
-          value={this.state.estado}
-          onChangeText={text => this.setState({estado: text})}
-          returnKeyType="next"
-          ref={`stateEntry`}
-          onSubmitEditing={() => this.refs.addressEntry.focus()}
-        />
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          textContentType="streetAddressLine1"
-          placeholder="Endereço..."
-          value={this.state.endereco}
-          onChangeText={text => this.setState({endereco: text})}
-          ref={`addressEntry`}
-          onSubmitEditing={() => this.refs.numberEntry.focus()}
-        />
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          secureTextEntry={true}
-          textContentType="streetAddressLine2"
-          placeholder="Numero..."
-          value={this.state.numero}
-          onChangeText={text => this.setState({numero: text})}
-          ref={`numberEntry`}
-          onSubmitEditing={() => this.refs.cepEntry.focus()}
-        />
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          secureTextEntry={true}
-          textContentType="postalCode"
-          placeholder="CEP"
-          value={this.state.cep}
-          onChangeText={text => this.setState({cep: text})}
-          ref={`cepEntry`}
-          onSubmitEditing={() => this.refs.cepEntry.focus()}
-        />
+        <View style={{alignSelf: 'stretch'}}>
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            textContentType="postalCode"
+            placeholder="CEP"
+            value={this.state.cep}
+            onChangeText={text => this.setState({cep: text})}
+            ref={`cepEntry`}
+            onSubmitEditing={() => this.refs.cepEntry.focus()}
+          />
+
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            textContentType="streetAddressLine1"
+            placeholder="Endereço..."
+            value={this.state.endereco}
+            onChangeText={text => this.setState({endereco: text})}
+            ref={`addressEntry`}
+            onSubmitEditing={() => this.refs.numberEntry.focus()}
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            autoCapitalize="none"
+            textContentType="addressCity"
+            placeholder="Cidade..."
+            value={this.state.cidade}
+            onChangeText={text => this.setState({cidade: text})}
+            returnKeyType="next"
+            onSubmitEditing={() => this.refs.stateEntry.focus()}
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            textContentType="addressState"
+            placeholder="Estado..."
+            value={this.state.estado}
+            onChangeText={text => this.setState({estado: text})}
+            returnKeyType="next"
+            ref={`stateEntry`}
+            onSubmitEditing={() => this.refs.addressEntry.focus()}
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            secureTextEntry={true}
+            textContentType="streetAddressLine2"
+            placeholder="Numero..."
+            value={this.state.numero}
+            onChangeText={text => this.setState({numero: text})}
+            ref={`numberEntry`}
+            onSubmitEditing={() => this.refs.cepEntry.focus()}
+          />
+        </View>
         <TouchableOpacity
           style={styles.loginButton}
           onPress={this.cadastraEndereco}>

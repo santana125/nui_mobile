@@ -23,7 +23,7 @@ class LoginComponent extends Component {
       const response = await api.post('/login', {email, senha});
       const {token} = response.data;
       await AsyncStorage.setItem('@UserToken', token);
-      this.props.navigation.navigate('Main');
+      this.props.navigation.navigate('MainStack');
     } catch(error){
       console.log(error);
     }

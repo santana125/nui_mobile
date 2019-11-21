@@ -19,7 +19,7 @@ function Welcome({navigation}) {
   useEffect(() => {
     async function checkLogin() {
       const UserToken = await AsyncStorage.getItem('@UserToken');
-      if (UserToken != null) navigation.navigate('Main');
+      if (UserToken != null) navigation.navigate('MainStack');
       else {
         console.log('User not authorized');
       }

@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
   TextInput,
   ActivityIndicator,
 } from 'react-native';
@@ -42,81 +43,93 @@ class UserSignup extends Component {
       console.log(err.response.message);
     }
   };
+  backToWelcome = () => {
+    this.props.navigation.navigate('Welcome');
+  };
 
   render() {
     const {loading} = this.state;
     return (
       <KeyboardAvoidingView style={styles.container}>
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          textContentType="name"
-          placeholder="Nome..."
-          value={this.state.nome}
-          onChangeText={text => this.setState({nome: text})}
-          returnKeyType="next"
-          onSubmitEditing={() => this.refs.emailEntry.focus()}
-        />
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          autoCapitalize="none"
-          textContentType="emailAddress"
-          placeholder="E-mail..."
-          value={this.state.email}
-          onChangeText={text => this.setState({email: text})}
-          returnKeyType="next"
-          onSubmitEditing={() => this.refs.cadEntry.focus()}
-          ref={'emailEntry'}
-        />
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          autoCapitalize="none"
-          placeholder="CPF ou CNPJ"
-          value={this.state.cadastroPessoa}
-          onChangeText={text => this.setState({cadastroPessoa: text})}
-          returnKeyType="next"
-          onSubmitEditing={() => this.refs.passEntry.focus()}
-          ref={'cadEntry'}
-        />
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          autoCapitalize="none"
-          secureTextEntry={true}
-          textContentType="password"
-          placeholder="Senha..."
-          value={this.state.senha}
-          onChangeText={text => this.setState({senha: text})}
-          returnKeyType="next"
-          onSubmitEditing={() => this.refs.confpassEntry.focus()}
-          ref={'passEntry'}
-        />
-        <TextInput
-          style={styles.input}
-          autoCorrect={false}
-          autoCapitalize="none"
-          secureTextEntry={true}
-          textContentType="password"
-          placeholder="Confirme a senha..."
-          value={this.state.senha2}
-          onChangeText={text => this.setState({senha2: text})}
-          returnKeyType="go"
-          onSubmitEditing={() => this.cadastrar}
-          ref={'confpassEntry'}
-        />
-        <TouchableOpacity style={styles.loginButton} onPress={this.cadastrar}>
-          <LinearGradient
-            colors={['#d737b3', '#ae45ac', '#8154a7']}
-            style={styles.loginBackground}>
-            {loading ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Text style={styles.loginText}>Continuar</Text>
-            )}
-          </LinearGradient>
-        </TouchableOpacity>
+        <View style={{alignSelf: 'stretch'}}>
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            textContentType="name"
+            placeholder="Nome..."
+            value={this.state.nome}
+            onChangeText={text => this.setState({nome: text})}
+            returnKeyType="next"
+            onSubmitEditing={() => this.refs.emailEntry.focus()}
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            autoCapitalize="none"
+            textContentType="emailAddress"
+            placeholder="E-mail..."
+            value={this.state.email}
+            onChangeText={text => this.setState({email: text})}
+            returnKeyType="next"
+            onSubmitEditing={() => this.refs.cadEntry.focus()}
+            ref={'emailEntry'}
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            autoCapitalize="none"
+            placeholder="CPF ou CNPJ"
+            value={this.state.cadastroPessoa}
+            onChangeText={text => this.setState({cadastroPessoa: text})}
+            returnKeyType="next"
+            onSubmitEditing={() => this.refs.passEntry.focus()}
+            ref={'cadEntry'}
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            autoCapitalize="none"
+            secureTextEntry={true}
+            textContentType="password"
+            placeholder="Senha..."
+            value={this.state.senha}
+            onChangeText={text => this.setState({senha: text})}
+            returnKeyType="next"
+            onSubmitEditing={() => this.refs.confpassEntry.focus()}
+            ref={'passEntry'}
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            autoCapitalize="none"
+            secureTextEntry={true}
+            textContentType="password"
+            placeholder="Confirme a senha..."
+            value={this.state.senha2}
+            onChangeText={text => this.setState({senha2: text})}
+            returnKeyType="go"
+            onSubmitEditing={() => this.cadastrar}
+            ref={'confpassEntry'}
+          />
+        </View>
+        <View style={{alignSelf: 'stretch'}}>
+          <TouchableOpacity style={styles.loginButton} onPress={this.cadastrar}>
+            <LinearGradient
+              colors={['#d737b3', '#ae45ac', '#8154a7']}
+              style={styles.loginBackground}>
+              {loading ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Text style={styles.loginText}>Continuar</Text>
+              )}
+            </LinearGradient>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={this.backToWelcome}>
+            <Text style={styles.backText}>Voltar</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     );
   }
@@ -187,6 +200,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 38,
     marginHorizontal: 32,
+    marginBottom: 20,
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',
@@ -220,6 +234,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAA',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  backText: {
+    fontWeight: 'bold',
+    fontSize: 22,
+    color: '#e5e9f0',
+  },
+  backButton: {
+    height: 48,
+    borderRadius: 38,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    marginHorizontal: 32,
+    marginBottom: 40,
+    justifyContent: 'center',
+    backgroundColor: '#e74644',
+    elevation: 2,
   },
 });
 

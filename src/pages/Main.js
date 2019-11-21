@@ -2,12 +2,13 @@ import React from 'react';
 import {SafeAreaView, View, StyleSheet, Text, Alert} from 'react-native';
 import HeaderComponent from '../components/MainPage/HeaderComponent';
 import CategoriesComponent from '../components/MainPage/CategoriesComponent';
-import EstablishmentComponent from '../components/MainPage/EstablishmentComponent';
+import Establishment from '../components/MainPage/Establishments';
 import AsyncStorage from '@react-native-community/async-storage';
 import {withNavigation} from 'react-navigation';
 import api from '../services/api';
 
 class Main extends React.Component {
+  static navigationOptions = {drawerLabel: 'Home'};
   checkUser = async () => {
     const userToken = await AsyncStorage.getItem('@UserToken');
     if (!userToken) {
@@ -24,7 +25,7 @@ class Main extends React.Component {
           [
             {
               text: 'Estabelecimento',
-              onPress: () => this.props.navigation.navigate('Address'),
+              onPress: () => this.props.navigation.navigate('EstabSignup'),
             },
             {
               text: 'Usuário',
@@ -55,7 +56,7 @@ class Main extends React.Component {
         <View style={styles.content}>
           <Text style={styles.titleText}>Categorias:</Text>
           <CategoriesComponent />
-          <EstablishmentComponent style={styles.stabs} />
+          <Establishment style={styles.stabs} />
         </View>
       </SafeAreaView>
     );
