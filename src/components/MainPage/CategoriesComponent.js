@@ -5,7 +5,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import {AsyncStorage} from '@react-native-community/async-storage';
 
-import api from '../../services/api'
+import api from '../../services/api';
+
+import hairwork from '../../assets/hairwork.png';
+import nails from '../../assets/nails.png';
+import makeup from '../../assets/makeup.png';
+import haircut from '../../assets/haircut.png';
 
 
 export default class CategoriesComponent extends Component {
@@ -15,50 +20,45 @@ export default class CategoriesComponent extends Component {
       pesquisa: '',
       loading: false,
     };
+    console.log(this.props)
   }
   render() {
     const {pesquisa} = this.state;
     return (
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.contentContainer} 
+        <ScrollView
+          contentContainerStyle={styles.contentContainer}
           horizontal={true}
           showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity style={styles.cardButton}>
+          <TouchableOpacity style={styles.cardButton} onPress={() => this.props.nav.navigate('MainStab')}>
             <LinearGradient 
               colors={['#d737b3', '#ae45ac', '#8154a7']}
               style={styles.cardBackground}>
-              <Icon name='bell' size={72} color='#fcfcfc'/>
+              <Image source={haircut} style={styles.categoryIcon} />
+            </LinearGradient>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cardButton}onPress={() => this.props.nav.navigate('EstabProfile')}>
+            <LinearGradient 
+              colors={['#d737b3', '#ae45ac', '#8154a7']}
+              style={styles.cardBackground}>
+              <Image source={nails} style={styles.categoryIcon} />
             </LinearGradient>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cardButton}>
             <LinearGradient 
               colors={['#d737b3', '#ae45ac', '#8154a7']}
               style={styles.cardBackground}>
-              <Icon name='heart' size={72} color='#fcfcfc'/>
+              <Image source={hairwork} style={styles.categoryIcon} />
             </LinearGradient>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cardButton}>
             <LinearGradient 
               colors={['#d737b3', '#ae45ac', '#8154a7']}
               style={styles.cardBackground}>
-              <Icon name='eye' size={72} color='#fcfcfc'/>
+              <Image source={makeup} style={styles.categoryIcon} />
             </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cardButton}>
-            <LinearGradient 
-              colors={['#d737b3', '#ae45ac', '#8154a7']}
-              style={styles.cardBackground}>
-              <Icon name='trophy' size={72} color='#fcfcfc'/>
-            </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cardButton}>
-            <LinearGradient 
-              colors={['#d737b3', '#ae45ac', '#8154a7']}
-              style={styles.cardBackground}>
-              <Icon name='close' size={64} color='#fcfcfc'/>
-            </LinearGradient>
-          </TouchableOpacity>
-          </ScrollView>
+        </ScrollView>
       </View>
     );
   }
@@ -66,16 +66,14 @@ export default class CategoriesComponent extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    margin:6,
+    margin: 6,
     borderRadius: 8,
-    alignSelf:'stretch',
+    alignSelf: 'stretch',
     alignItems: 'center',
-    alignContent:'center',
+    alignContent: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#e5e9f0',
     height: 100,
-    elevation: 4,
   },
   cardButton: {
     width: 84,
@@ -87,6 +85,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',
-    
+  },
+  categoryIcon: {
+    height: 72,
+    width: 72,
   },
 });

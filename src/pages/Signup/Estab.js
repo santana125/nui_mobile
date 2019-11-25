@@ -57,7 +57,7 @@ class EstabSignup extends Component {
       '#D08770',
       '#EBCB8B',
       '#A3BE8C',
-      '#B48EAD',
+      '#FF69B4',
     ];
   }
   cadastraEstab = async () => {

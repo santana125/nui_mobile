@@ -8,6 +8,12 @@ import {withNavigation} from 'react-navigation';
 import api from '../services/api';
 
 class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {},
+    };
+  }
   static navigationOptions = {drawerLabel: 'Home'};
   checkUser = async () => {
     const userToken = await AsyncStorage.getItem('@UserToken');
@@ -29,7 +35,7 @@ class Main extends React.Component {
             },
             {
               text: 'Usuário',
-              onPress: () => this.props.navigation.navigate('Main'),
+              onPress: () => this.props.navigation.navigate('UserSignup'),
             },
             {
               text: 'Cancelar',
@@ -46,16 +52,25 @@ class Main extends React.Component {
     }
   };
 
-  render() {
+  getUserInfo = async () => {
+    const token = await AsyncStorage.getItem('@UserToken');
+    const user = await api.get('/me', {headers: {Authorization: token}});
+    this.setState({user: user.data});
+  };
+  componentDidMount() {
     this.checkUser();
+    this.getUserInfo();
+  }
+
+  render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <HeaderComponent />
+          <HeaderComponent avatar={this.state.user.avatar} />
         </View>
         <View style={styles.content}>
           <Text style={styles.titleText}>Categorias:</Text>
-          <CategoriesComponent />
+          <CategoriesComponent nav={this.props.navigation} />
           <Establishment style={styles.stabs} />
         </View>
       </SafeAreaView>

@@ -12,28 +12,27 @@ export default class Establishment extends Component {
     const {item} = this.props;
     return (
       <TouchableOpacity>
-      <View style={styles.banner} key={item._id}>
-      
-        <View style={styles.profileView}>
-          <Image
-            style={styles.profilePic}
-            source={item.avatar ? {uri: item.avatar} : avatar}
-          />
-        </View>
-        <View style={styles.profileInfo}>
-          <View style={styles.profileInfoRow}>
-            <Text style={styles.profileName}>{item.nome}</Text>
-            <Text>{item.is_opened ? 'Aberto' : 'Fechado'}</Text>
+        <View style={styles.banner} key={item._id}>
+          <View style={styles.profileView}>
+            <Image
+              style={styles.profilePic}
+              source={item.avatar ? {uri: item.avatar} : avatar}
+            />
           </View>
-          <View style={styles.profileInfoRow}>
-            <Icon name="star" color="#fccf03" size={22}>
-              <Text> {item.nota}</Text>
-            </Icon>
-            <Text>{item.endereco ? item.endereco.endereco : null}</Text>
-            <Text>{'$'.repeat(item.valor)}</Text>
+          <View style={styles.profileInfo}>
+            <View style={styles.profileInfoRow}>
+              <Text style={styles.profileName}>{item.nome}</Text>
+              <Text>{item.is_opened ? 'Aberto' : 'Fechado'}</Text>
+            </View>
+            <View style={styles.profileInfoRow}>
+              <Icon name="star" color="#fccf03" size={22}>
+                <Text> {item.nota}</Text>
+              </Icon>
+              <Text>{item.endereco ? item.endereco.endereco : null}</Text>
+              <Text>{'$'.repeat(item.valor)}</Text>
+            </View>
           </View>
         </View>
-      </View>
       </TouchableOpacity>
     );
   }

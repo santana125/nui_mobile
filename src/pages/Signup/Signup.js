@@ -1,93 +1,175 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
-  ScrollView,
-  View,
+  ActivityIndicator,
   KeyboardAvoidingView,
   StyleSheet,
+  View,
   Text,
+  Image,
+  ImageBackground,
   TouchableOpacity,
+  TextInput,
+  Alert,
 } from 'react-native';
-import IconFontisto from 'react-native-vector-icons/Fontisto';
 import LinearGradient from 'react-native-linear-gradient';
 import {withNavigation} from 'react-navigation';
+import api from '../../services/api';
+import AsyncStorage from '@react-native-community/async-storage';
+import ImagePicker from 'react-native-image-crop-picker';
 
-class Signup extends React.Component {
+import avatar from '../../assets/avatarUser.jpg';
+
+class BasicSignup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 0,
-      type: false,
       nome: '',
-      senha: '',
-      senha2: '',
+      cpf: '',
       email: '',
-      cadPessoa: '',
+      senha: '',
+      confirmaSenha: '',
+      avatar: {},
+      loading: false,
     };
   }
-  selectType = type => {
-    this.setState({type});
-  };
-  goToSignup = () => {
-    this.state.type
-      ? this.props.navigation.navigate('EstabSignup')
-      : this.props.navigation.navigate('SignupUser');
+  cadastraEstab = async () => {
+    const {nome, cpf, email, senha, confirmaSenha} = this.state;
+
+    const token = await AsyncStorage.getItem('@UserToken');
+    if (senha !== confirmaSenha) {
+      Alert.alert('Erro', 'As senhas não combinam.');
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append('nome', nome);
+      formData.append('cpf', cpf);
+      formData.append('email', email);
+      formData.append('senha', senha);
+      if (this.state.avatar.name) {
+        formData.append('avatar', {
+          name: avatar.name,
+          uri: avatar.path,
+          type: avatar.mime,
+        });
+      }
+      const Esresponse = await api.post('/usuario', formData, {
+        headers: {Authorization: token, 'Content-Type': 'multipart/form-data'},
+      });
+
+      this.props.navigation.navigate('Main');
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 404) {
+        Alert.alert('Erro', 'Não foi possível encontrar o servidor.');
+      } else {
+        Alert.alert('Erro', error.response.data.message);
+      }
+    }
   };
 
-  move = delta => {
-    const page = this.state.page + delta;
-    this.go(page);
+  handleAvatarPick = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+    }).then(image => {
+      if (image.mime === 'image/jpeg') image.name = 'avatar.jpeg';
+      if (image.mime === 'image/jpg') image.name = 'avatar.jpg';
+      if (image.mime === 'image/png') image.name = 'avatar.png';
+      this.setState({avatar: image});
+    });
   };
 
-  go = page => {
-    this.viewPager.setPage(page);
-    this.setState({page});
-  };
 
   render() {
-    const {page, type} = this.state;
+    const {loading} = this.state;
+    const avatarImage = this.state.avatar.path
+      ? {uri: this.state.avatar.path}
+      : avatar;
     return (
-      <ScrollView style={styles.container} contentContainerStyle={{flex: 1}}>
-        <KeyboardAvoidingView style={styles.content} enabled behavior="padding">
-          <View style={{flex: 1, alignSelf: 'stretch'}}>
-            <KeyboardAvoidingView
-              key="0"
-              style={{
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginVertical: 20,
-                flex: 1,
-              }}>
-              <Text style={styles.titleText}>Escolha uma opção:</Text>
-              <View style={styles.cards}>
-                <TouchableOpacity
-                  style={[
-                    !type ? styles.cardSelected : styles.card,
-                    {marginRight: 5},
-                  ]}
-                  onPress={() => this.selectType(false)}>
-                  <IconFontisto name="smiley" size={64} />
-                  <Text style={styles.subtitle}>Usuario</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={type ? styles.cardSelected : styles.card}
-                  onPress={() => this.selectType(true)}>
-                  <IconFontisto name="shopping-store" size={64} />
-                  <Text style={styles.subtitle}>Estabelecimento</Text>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={styles.loginButton}
-                onPress={this.goToSignup}>
-                <LinearGradient
-                  colors={['#d737b3', '#ae45ac', '#8154a7']}
-                  style={styles.loginBackground}>
-                  <Text style={styles.loginText}>Proxima etapa</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </KeyboardAvoidingView>
+      <KeyboardAvoidingView style={styles.container}>
+        <View style={{alignSelf: 'stretch'}}>
+          <View style={styles.photoBack}>
+            <TouchableOpacity
+              style={{marginTop: 50, paddingBottom: 40}}
+              onPress={this.handleAvatarPick}>
+              <Image
+                source={avatarImage}
+                style={{width: 120, height: 120, borderRadius: 60}}
+              />
+            </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
-      </ScrollView>
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            placeholder="Nome..."
+            value={this.state.nome}
+            onChangeText={text => this.setState({nome: text})}
+            returnKeyType="next"
+            onSubmitEditing={() => this.refs.cpfEntry.focus()}
+          />
+          <TextInput
+          style={styles.input}
+          autoCorrect={false}
+          textContentType="text"
+          placeholder="CPF..."
+          value={this.state.cpf}
+          onChangeText={text => this.setState({cpf: text})}
+          ref={`cpfEntry`}
+          onSubmitEditing={() => this.refs.emailEntry.focus()}
+        />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            textContentType="email"
+            placeholder="Email..."
+            value={this.state.email}
+            onChangeText={text => this.setState({telefone: text})}
+            returnKeyType="next"
+            ref={`emailEntry`}
+            onSubmitEditing={() => this.refs.senhaEntry.focus()}
+          />
+
+
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            textContentType="password"
+            secureTextEntry={true}
+            placeholder="Senha"
+            value={this.state.endereco}
+            onChangeText={text => this.setState({endereco: text})}
+            ref={`senhaEntry`}
+            onSubmitEditing={() => this.refs.confSenhaEntry.focus()}
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            autoCapitalize="none"
+            textContentType="addressCity"
+            placeholder="Confirme sua senha..."
+            value={this.state.cidade}
+            onChangeText={text => this.setState({cidade: text})}
+            returnKeyType="next"
+            ref={`confSenhaEntry`}
+            onSubmitEditing={this.cadastraUsuario}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={this.cadastraEstab}>
+          <LinearGradient
+            colors={['#d737b3', '#ae45ac', '#8154a7']}
+            style={styles.loginBackground}>
+            {loading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.loginText}>Continuar</Text>
+            )}
+          </LinearGradient>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -95,6 +177,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#eceff4',
+    alignSelf: 'stretch',
+    paddingVertical: 10,
+    alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'space-between',
   },
   header: {
     alignItems: 'center',
@@ -116,7 +203,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 22,
     fontWeight: 'bold',
-    textAlign: 'left',
+    textAlign: 'center',
   },
   cards: {
     maxHeight: 230,
@@ -155,6 +242,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 32,
     alignSelf: 'stretch',
     alignItems: 'center',
+    marginBottom: 70,
     justifyContent: 'center',
     elevation: 2,
   },
@@ -183,10 +271,17 @@ const styles = StyleSheet.create({
     width: 128,
     height: 128,
     borderRadius: 64,
-    backgroundColor: '#FAA',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  photoBack: {
+    height: 160,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  avatar: {
+    zIndex: 3,
+  },
 });
 
-export default withNavigation(Signup);
+export default withNavigation(BasicSignup);

@@ -1,135 +1,278 @@
 import React, {Component} from 'react';
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  Image,
+  TouchableOpacity,
   TextInput,
-  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {withNavigation} from 'react-navigation';
 import api from '../../services/api';
 import AsyncStorage from '@react-native-community/async-storage';
+import ColorPalette from 'react-native-color-palette';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ImagePicker from 'react-native-image-crop-picker';
+
+import background from '../../assets/background.jpg';
+import avatar from '../../assets/avatar.png';
 
 class UserSignup extends Component {
   constructor(props) {
     super(props);
     this.state = {
       nome: '',
-      senha: '',
-      senha2: '',
-      email: '',
-      cadastroPessoa: '',
+      cor: '',
+      telefone: '',
+      foto: '',
+      endereco: '',
+      cidade: '',
+      numero: '',
+      cep: '',
+      estado: '',
+      avatar: {},
+      background: {},
       loading: false,
-      token: '',
     };
+
+    this.colors = [
+      '#C0392B',
+      '#E74C3C',
+      '#9B59B6',
+      '#2980B9',
+      '#2E3440',
+      '#3B4252',
+      '#E5E9F0',
+      '#ECEFF4',
+      '#88C0D0',
+      '#81A1C1',
+      '#5E81AC',
+      '#BF616A',
+      '#D08770',
+      '#EBCB8B',
+      '#A3BE8C',
+      '#B48EAD',
+    ];
   }
-  cadastrar = async () => {
-    const {nome, senha, senha2, email, cadastroPessoa} = this.state;
+  cadastraEstab = async () => {
+    const {
+      nome,
+      cor,
+      telefone,
+      foto,
+      endereco,
+      cidade,
+      numero,
+      cep,
+      estado,
+      avatar,
+      background,
+    } = this.state;
+
+    const token = await AsyncStorage.getItem('@UserToken');
     try {
-      const response = await api.post('/usuario', {
-        nome,
-        senha,
-        senha2,
-        email,
-        cadastroPessoa,
+      const formData = new FormData();
+      formData.append('nome', nome);
+      formData.append('cor', cor);
+      formData.append('telefone', telefone);
+      if (this.state.avatar.name) {
+        formData.append('avatar', {
+          name: avatar.name,
+          uri: avatar.path,
+          type: avatar.mime,
+        });
+      }
+      if (this.state.background.name) {
+        formData.append('background', {
+          name: background.name,
+          uri: background.path,
+          type: background.mime,
+        });
+      }
+      const Esresponse = await api.post('/estabelecimento', formData, {
+        headers: {Authorization: token, 'Content-Type': 'multipart/form-data'},
       });
-      const token = response.data.message;
-      await AsyncStorage.setItem('@UserToken', token);
-      this.props.navigation.navigate('Main');
-    } catch (err) {
-      console.log(err.response.message);
+      const Enresponse = await api.post(
+        '/endereco',
+        {endereco, cidade, numero, cep, estado},
+        {headers: {Authorization: token}},
+      );
+      const response = await api.post(
+        '/me/finish',
+        {},
+        {
+          headers: {Authorization: token},
+        },
+      );
+      this.props.navigation.navigate('MainStab');
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 404) {
+        Alert.alert('Erro', 'Não foi possível encontrar o servidor.');
+      } else {
+        Alert.alert('Erro', error.response.data.message);
+      }
     }
   };
-  backToWelcome = () => {
-    this.props.navigation.navigate('Welcome');
+
+  handleAvatarPick = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropping: true,
+    }).then(image => {
+      if (image.mime === 'image/jpeg') image.name = 'avatar.jpeg';
+      if (image.mime === 'image/jpg') image.name = 'avatar.jpg';
+      if (image.mime === 'image/png') image.name = 'avatar.png';
+      this.setState({avatar: image});
+    });
+  };
+
+  handleBackgroundPick = () => {
+    ImagePicker.openPicker({
+      width: 400,
+      height: 200,
+      cropping: true,
+    }).then(image => {
+      if (image.mime === 'image/jpeg') image.name = 'background.jpeg';
+      if (image.mime === 'image/jpg') image.name = 'background.jpg';
+      if (image.mime === 'image/png') image.name = 'background.png';
+      this.setState({background: image});
+    });
   };
 
   render() {
     const {loading} = this.state;
+    const avatarImage = this.state.avatar.path
+      ? {uri: this.state.avatar.path}
+      : avatar;
+    const backgroundImage = this.state.background.path
+      ? {uri: this.state.background.path}
+      : background;
     return (
       <KeyboardAvoidingView style={styles.container}>
         <View style={{alignSelf: 'stretch'}}>
+          <View style={styles.photoBack}>
+            <TouchableOpacity
+              style={{width: '100%', height: '100%'}}
+              onPress={this.handleBackgroundPick}>
+              <Image
+                source={backgroundImage}
+                style={{width: '100%', height: '100%'}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{marginTop: -120, paddingBottom: 40}}
+              onPress={this.handleAvatarPick}>
+              <Image
+                source={avatarImage}
+                style={{width: 120, height: 120, borderRadius: 60}}
+              />
+            </TouchableOpacity>
+          </View>
           <TextInput
             style={styles.input}
             autoCorrect={false}
-            textContentType="name"
             placeholder="Nome..."
             value={this.state.nome}
             onChangeText={text => this.setState({nome: text})}
             returnKeyType="next"
-            onSubmitEditing={() => this.refs.emailEntry.focus()}
+            onSubmitEditing={() => this.refs.telefoneEntry.focus()}
           />
           <TextInput
             style={styles.input}
             autoCorrect={false}
-            autoCapitalize="none"
-            textContentType="emailAddress"
-            placeholder="E-mail..."
-            value={this.state.email}
-            onChangeText={text => this.setState({email: text})}
+            textContentType="telephoneNumber"
+            placeholder="Telefone..."
+            value={this.state.telefone}
+            onChangeText={text => this.setState({telefone: text})}
             returnKeyType="next"
-            onSubmitEditing={() => this.refs.cadEntry.focus()}
-            ref={'emailEntry'}
+            ref={`telefoneEntry`}
+            onSubmitEditing={() => this.refs.addressEntry.focus()}
+          />
+          <Text style={styles.titleText}>Selecione uma cor: </Text>
+          <ColorPalette
+            onChange={color => {
+              this.setState({cor: color});
+            }}
+            title=""
+            value={this.state.coR}
+            colors={this.colors}
+            icon={
+              <Icon name={'check-circle-outline'} size={25} color={'white'} />
+            }
+          />
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            textContentType="postalCode"
+            placeholder="CEP"
+            value={this.state.cep}
+            onChangeText={text => this.setState({cep: text})}
+            ref={`cepEntry`}
+            onSubmitEditing={() => this.refs.cepEntry.focus()}
+          />
+
+          <TextInput
+            style={styles.input}
+            autoCorrect={false}
+            textContentType="streetAddressLine1"
+            placeholder="Endereço..."
+            value={this.state.endereco}
+            onChangeText={text => this.setState({endereco: text})}
+            ref={`addressEntry`}
+            onSubmitEditing={() => this.refs.numberEntry.focus()}
           />
           <TextInput
             style={styles.input}
             autoCorrect={false}
             autoCapitalize="none"
-            placeholder="CPF ou CNPJ"
-            value={this.state.cadastroPessoa}
-            onChangeText={text => this.setState({cadastroPessoa: text})}
+            textContentType="addressCity"
+            placeholder="Cidade..."
+            value={this.state.cidade}
+            onChangeText={text => this.setState({cidade: text})}
             returnKeyType="next"
-            onSubmitEditing={() => this.refs.passEntry.focus()}
-            ref={'cadEntry'}
+            onSubmitEditing={() => this.refs.stateEntry.focus()}
           />
           <TextInput
             style={styles.input}
             autoCorrect={false}
-            autoCapitalize="none"
-            secureTextEntry={true}
-            textContentType="password"
-            placeholder="Senha..."
-            value={this.state.senha}
-            onChangeText={text => this.setState({senha: text})}
+            textContentType="addressState"
+            placeholder="Estado..."
+            value={this.state.estado}
+            onChangeText={text => this.setState({estado: text})}
             returnKeyType="next"
-            onSubmitEditing={() => this.refs.confpassEntry.focus()}
-            ref={'passEntry'}
+            ref={`stateEntry`}
+            onSubmitEditing={() => this.refs.addressEntry.focus()}
           />
           <TextInput
             style={styles.input}
             autoCorrect={false}
-            autoCapitalize="none"
-            secureTextEntry={true}
-            textContentType="password"
-            placeholder="Confirme a senha..."
-            value={this.state.senha2}
-            onChangeText={text => this.setState({senha2: text})}
-            returnKeyType="go"
-            onSubmitEditing={() => this.cadastrar}
-            ref={'confpassEntry'}
+            autoCompleteType="off"
+            placeholder="Numero..."
+            value={this.state.numero}
+            onChangeText={text => this.setState({numero: text})}
+            ref={`numberEntry`}
+            onSubmitEditing={() => this.refs.cepEntry.focus()}
           />
         </View>
-        <View style={{alignSelf: 'stretch'}}>
-          <TouchableOpacity style={styles.loginButton} onPress={this.cadastrar}>
-            <LinearGradient
-              colors={['#d737b3', '#ae45ac', '#8154a7']}
-              style={styles.loginBackground}>
-              {loading ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Text style={styles.loginText}>Continuar</Text>
-              )}
-            </LinearGradient>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={this.backToWelcome}>
-            <Text style={styles.backText}>Voltar</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={this.cadastraEstab}>
+          <LinearGradient
+            colors={['#d737b3', '#ae45ac', '#8154a7']}
+            style={styles.loginBackground}>
+            {loading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.loginText}>Proximo passo</Text>
+            )}
+          </LinearGradient>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     );
   }
@@ -141,6 +284,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     paddingVertical: 10,
     alignItems: 'center',
+    textAlign: 'center',
     justifyContent: 'space-between',
   },
   header: {
@@ -163,7 +307,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 22,
     fontWeight: 'bold',
-    textAlign: 'left',
+    textAlign: 'center',
   },
   cards: {
     maxHeight: 230,
@@ -200,9 +344,9 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 38,
     marginHorizontal: 32,
-    marginBottom: 20,
     alignSelf: 'stretch',
     alignItems: 'center',
+    marginBottom: 70,
     justifyContent: 'center',
     elevation: 2,
   },
@@ -231,25 +375,16 @@ const styles = StyleSheet.create({
     width: 128,
     height: 128,
     borderRadius: 64,
-    backgroundColor: '#FAA',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  backText: {
-    fontWeight: 'bold',
-    fontSize: 22,
-    color: '#e5e9f0',
-  },
-  backButton: {
-    height: 48,
-    borderRadius: 38,
-    alignSelf: 'stretch',
+  photoBack: {
+    height: 160,
+    justifyContent: 'space-around',
     alignItems: 'center',
-    marginHorizontal: 32,
-    marginBottom: 40,
-    justifyContent: 'center',
-    backgroundColor: '#e74644',
-    elevation: 2,
+  },
+  avatar: {
+    zIndex: 3,
   },
 });
 

@@ -43,7 +43,7 @@ function Welcome({navigation}) {
         <Text style={styles.signinText}> Ainda não é cadastrado ?</Text>
         <TouchableOpacity
           style={styles.signinButton}
-          onPress={() => navigation.navigate('UserSignup')}>
+          onPress={() => navigation.navigate('BasicSignup')}>
           <Text style={styles.loginText}>CADASTRAR</Text>
         </TouchableOpacity>
       </View>

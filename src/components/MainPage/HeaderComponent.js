@@ -6,10 +6,11 @@ import {
   TouchableWithoutFeedback,
   TextInput,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import {AsyncStorage} from '@react-native-community/async-storage';
+
+import avatar from '../../assets/avatarUser.jpg';
 
 import api from '../../services/api';
 
@@ -20,6 +21,7 @@ export default class HeaderComponent extends Component {
       pesquisa: '',
       loading: false,
     };
+    console.log(this.props)
   }
   render() {
     const {pesquisa} = this.state;
@@ -55,10 +57,7 @@ export default class HeaderComponent extends Component {
         </View>
         <Image
           style={styles.profilePic}
-          source={{
-            uri:
-              'https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg-760x506.jpg',
-          }}
+          source={this.props.avatar ? {uri: this.props.avatar} : avatar}
         />
       </View>
     );

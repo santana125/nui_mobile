@@ -15,7 +15,6 @@ import api from '../../services/api';
 import AsyncStorage from '@react-native-community/async-storage';
 
 class Address extends Component {
-  static navigationOptions = {drawerLabel: 'Addr'};
   constructor(props) {
     super(props);
     this.state = {
