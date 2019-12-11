@@ -21,7 +21,6 @@ export default class HeaderComponent extends Component {
       pesquisa: '',
       loading: false,
     };
-    console.log(this.props)
   }
   render() {
     const {pesquisa} = this.state;

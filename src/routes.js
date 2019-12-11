@@ -19,7 +19,8 @@ import UserSignup from './pages/Signup/UserSignup';
 import Address from './pages/Signup/Address';
 import EstabSignup from './pages/Signup/Estab';
 import EstabProfile from './pages/EstabProfile';
-import { ScrollView } from 'react-native-gesture-handler';
+import EstabUserView from './pages/EstabUserView';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const drawerCustom = props => (
   <SafeAreaView>
@@ -27,27 +28,29 @@ const drawerCustom = props => (
       <Image
         style={{height: 140, width: 140, borderRadius: 70}}
         source={{
-          uri:
-            'http://192.168.2.125:5000/imgs/useravatar.jpeg',
+          uri: 'http://192.168.2.125:5000/imgs/useravatar.jpeg',
         }}
       />
     </View>
     <ScrollView>
-      <DrawerItems {...props}/>
+      <DrawerItems {...props} />
     </ScrollView>
   </SafeAreaView>
 );
 
-const MainStack = createDrawerNavigator({
-  Main: Main,
-  Help: {screen: Address, navigationOptions: {drawerLabel: 'Ajuda'}},
-  Profile: {screen: MainStab, navigationOptions: {drawerLabel: 'Perfil'}},
-  Payment: {
-    screen: UserSignup,
-    navigationOptions: {drawerLabel: 'Metodos de Pagamento'},
+const MainStack = createDrawerNavigator(
+  {
+    Main: Main,
+    Help: {screen: Address, navigationOptions: {drawerLabel: 'Ajuda'}},
+    Profile: {screen: MainStab, navigationOptions: {drawerLabel: 'Perfil'}},
+    Payment: {
+      screen: UserSignup,
+      navigationOptions: {drawerLabel: 'Metodos de Pagamento'},
+    },
+    Exit: {screen: EstabSignup, navigationOptions: {drawerLabel: 'Sair'}},
   },
-  Exit: {screen: EstabSignup, navigationOptions: {drawerLabel: 'Sair'}},
-}, {contentComponent: drawerCustom});
+  {contentComponent: drawerCustom},
+);
 
 export default createAppContainer(
   createSwitchNavigator({
@@ -58,6 +61,7 @@ export default createAppContainer(
     UserSignup,
     MainStack,
     MainStab,
+    EstabUserView,
     EstabProfile,
   }),
 );

@@ -2,7 +2,7 @@ import React from 'react';
 import {SafeAreaView, View, StyleSheet, Text, Alert} from 'react-native';
 import HeaderComponent from '../components/MainPage/HeaderComponent';
 import CategoriesComponent from '../components/MainPage/CategoriesComponent';
-import Establishment from '../components/MainPage/Establishments';
+import Establishments from '../components/MainPage/Establishments';
 import AsyncStorage from '@react-native-community/async-storage';
 import {withNavigation} from 'react-navigation';
 import api from '../services/api';
@@ -71,7 +71,7 @@ class Main extends React.Component {
         <View style={styles.content}>
           <Text style={styles.titleText}>Categorias:</Text>
           <CategoriesComponent nav={this.props.navigation} />
-          <Establishment style={styles.stabs} />
+          <Establishments />
         </View>
       </SafeAreaView>
     );

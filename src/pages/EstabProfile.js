@@ -14,7 +14,7 @@ class EstabProfile extends React.Component {
           <View style={styles.photoBack}>
           <View style={{width: '100%', height: '100%'}}>
             <Image
-              source={{uri: 'http://192.168.2.125:5000/imgs/mesha.png'}}
+              source={{uri: 'http://192.168.2.125:5000/imgs/mechaback.jpeg'}}
               style={{width: '100%', height: '100%'}}
             />
           </View>

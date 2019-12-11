@@ -20,7 +20,6 @@ export default class CategoriesComponent extends Component {
       pesquisa: '',
       loading: false,
     };
-    console.log(this.props)
   }
   render() {
     const {pesquisa} = this.state;

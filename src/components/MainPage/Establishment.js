@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, Image, TouchableOpacity, Alert} from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import avatar from '../../assets/avatar.png';
@@ -7,11 +7,16 @@ export default class Establishment extends Component {
   constructor(props) {
     super(props);
   }
-
+  handlePress = func => {
+    func(this.props.item._id);
+  };
   render() {
-    const {item} = this.props;
+    const {item, onPress} = this.props;
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          this.handlePress(onPress);
+        }}>
         <View style={styles.banner} key={item._id}>
           <View style={styles.profileView}>
             <Image

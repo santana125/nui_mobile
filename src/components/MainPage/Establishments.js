@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {withNavigation} from 'react-navigation';
 import {
-  Text,
-  View,
-  Image,
+  Alert,
   KeyboardAvoidingView,
   ActivityIndicator,
   TextInput,
@@ -15,7 +13,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import api from '../../services/api';
-
 
 import Establishment from './Establishment';
 
@@ -50,6 +47,9 @@ class Establishments extends Component {
       });
     }
   }
+  handleSelect = id => {
+    this.props.navigation.navigate('EstabUserView', {id:id});
+  };
   render() {
     const {pesquisa, estabelecimentos} = this.state;
     return (
@@ -63,7 +63,9 @@ class Establishments extends Component {
               data={estabelecimentos}
               onRefresh={this.refreshPosts}
               keyExtractor={item => item._id}
-              renderItem={({item, index}) => <Establishment item={item} />}
+              renderItem={({item}) => (
+                <Establishment item={item} onPress={this.handleSelect}/>
+              )}
             />
           )}
         </ScrollView>
